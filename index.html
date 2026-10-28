@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision to Visuals 2.0 | Dexterity 2k26-27 Countdown Timer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* -------------------------------------------------------------
+       PALETTE DEFINITION (Black, Crimson Red, Off White)
+       - Black:       #0B0B0B (Deep Obsidian Canvas)
+       - Crimson Red: #8B0D1A (Rich Velvet Crimson Accent)
+       - Off White:   #F5F2ED (Sophisticated Ivory Typography)
+    -------------------------------------------------------------- */
+    :root {
+      --color-black: #0B0B0B;
+      --color-crimson: #8B0D1A;
+      --color-crimson-vivid: #B81427;
+      --color-crimson-glow: rgba(139, 13, 26, 0.65);
+      --color-crimson-subtle: rgba(139, 13, 26, 0.16);
+      --color-crimson-border: rgba(139, 13, 26, 0.45);
+      --color-offwhite: #F5F2ED;
+      
+      --bg-canvas: #0B0B0B;
+      --bg-card: #131313;
+      --bg-card-hover: #181818;
+      
+      --text-main: #F5F2ED;
+      --text-muted: rgba(245, 242, 237, 0.68);
+      --text-light: rgba(245, 242, 237, 0.44);
+      
+      --track-color: rgba(245, 242, 237, 0.08);
+      
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-display-tag: 'Cinzel', serif;
+      --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --shadow-crimson: 0 8px 32px rgba(139, 13, 26, 0.45);
+      --shadow-crimson-hover: 0 12px 42px rgba(184, 20, 39, 0.65);
+      --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(245, 242, 237, 0.12);
+    }
+
+    /* -------------------------------------------------------------
+       GLOBAL RESET & DARK CANVAS
+    -------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      overflow-y: auto;
+      user-select: none;
+      transition: background-color 0.8s ease;
+    }
+
+    /* Ambient Crimson Glow behind stage */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 46%, rgba(139, 13, 26, 0.18) 0%, rgba(11, 11, 11, 0) 74%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Fullscreen pulsating vignette for Time's Up */
+    #ambientVignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    body.times-up #ambientVignette {
+      opacity: 1;
+      animation: ambientCrimsonPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes ambientCrimsonPulse {
+      0%, 100% {
+        box-shadow: inset 0 0 80px rgba(139, 13, 26, 0.35), inset 0 0 180px rgba(139, 13, 26, 0.2);
+      }
+      50% {
+        box-shadow: inset 0 0 140px rgba(184, 20, 39, 0.65), inset 0 0 280px rgba(139, 13, 26, 0.4);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       LAYOUT & PAGE WRAPPER
+    -------------------------------------------------------------- */
+    .app-viewport {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: clamp(1.25rem, 3vw, 2.5rem);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: pageEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes pageEntrance {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       TOP CORNER CONTROLS (Fullscreen & Sound Test)
+    -------------------------------------------------------------- */
+    .corner-actions {
+      position: absolute;
+      top: clamp(1rem, 3vw, 2rem);
+      right: clamp(1rem, 3vw, 2.5rem);
+      display: flex;
+      gap: 0.75rem;
+      z-index: 50;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(245, 242, 237, 0.04);
+      border: 1px solid rgba(245, 242, 237, 0.12);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    .icon-btn:hover {
+      color: var(--color-offwhite);
+      border-color: var(--color-crimson);
+      background: var(--color-crimson-subtle);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(139, 13, 26, 0.4);
+    }
+
+    .icon-btn:active {
+      transform: translateY(0) scale(0.96);
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* -------------------------------------------------------------
+       EVENT HEADER (Editorial Luxury Aesthetic)
+    -------------------------------------------------------------- */
+    .header-section {
+      text-align: center;
+      max-width: 900px;
+      width: 100%;
+      margin-top: clamp(0.5rem, 2vh, 1.5rem);
+    }
+
+    .fest-series-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: var(--font-display-tag);
+      font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+      font-weight: 700;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      padding: clamp(0.7rem, 1.3vh, 0.95rem) clamp(1.8rem, 2.8vw, 2.6rem);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.8px solid #FFFFFF;
+      border-radius: 9999px;
+      margin-bottom: clamp(1.1rem, 2.2vh, 1.7rem);
+      box-shadow: 0 6px 28px rgba(255, 255, 255, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+      text-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .fest-series-tag:hover {
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 36px rgba(255, 255, 255, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .fest-series-tag::before {
+      content: '';
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: 0 0 10px #FFFFFF, 0 0 18px rgba(255, 255, 255, 0.9);
+    }
+
+    .event-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.3rem, 5.4vw, 4.6rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      line-height: 1.12;
+      color: var(--color-offwhite);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+    }
+
+    /* -------------------------------------------------------------
+       CENTER STAGE: HOUR : MIN : SEC LUXURY CARDS WITH SMOOTH ROLLER
+    -------------------------------------------------------------- */
+    .timer-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: clamp(1.2rem, 3.2vh, 2.8rem) 0;
+      position: relative;
+      width: 100%;
+      max-width: 980px;
+    }
+
+    /* Subtle Cherry Red Gradient Glow behind the timer */
+    .timer-stage::before {
+      content: '';
+      position: absolute;
+      top: 36%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(340px, 72vw, 880px);
+      height: clamp(220px, 36vw, 440px);
+      background: radial-gradient(ellipse at center, rgba(200, 16, 46, 0.28) 0%, rgba(139, 13, 26, 0.16) 42%, rgba(11, 11, 11, 0) 74%);
+      filter: blur(52px);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.9;
+      transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
+    }
+
+    .urgent.timer-stage::before {
+      background: radial-gradient(ellipse at center, rgba(224, 6, 52, 0.45) 0%, rgba(184, 20, 39, 0.24) 48%, rgba(11, 11, 11, 0) 76%);
+      filter: blur(58px);
+      animation: cherryAmbientGlowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes cherryAmbientGlowPulse {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.88;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    /* Cards Cluster */
+    .timer-display-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.6rem, 2vw, 1.8rem);
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Individual Unit Card (Hours, Minutes, Seconds) */
+    .unit-card {
+      position: relative;
+      flex: 1;
+      max-width: clamp(140px, 22vw, 220px);
+      min-width: clamp(92px, 16vw, 150px);
+      background: var(--bg-card);
+      border: 1px solid rgba(139, 13, 26, 0.35);
+      border-radius: clamp(16px, 2.4vw, 24px);
+      padding: clamp(1.4rem, 2.6vw, 2.4rem) clamp(0.5rem, 1.4vw, 1.2rem) clamp(1.1rem, 2vw, 1.6rem);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(245, 242, 237, 0.1), 0 0 20px rgba(139, 13, 26, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(14px);
+    }
+
+    .unit-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245, 242, 237, 0.25), transparent);
+    }
+
+    .unit-card:hover {
+      border-color: var(--color-crimson-vivid);
+      transform: translateY(-3px);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.95), 0 0 32px rgba(184, 20, 39, 0.25);
+    }
+
+    /* Smooth Sliding / Rolling Digit Window */
+    .digits-cluster {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(2px, 0.4vw, 6px);
+      width: 100%;
+      height: clamp(3.6rem, 8.5vw, 6.8rem);
+      font-size: clamp(3.4rem, 8vw, 6.5rem);
+    }
+
+    .digit-slot {
+      position: relative;
+      width: clamp(2.2rem, 5vw, 4.2rem);
+      flex: 0 0 clamp(2.2rem, 5vw, 4.2rem);
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1em;
+      /* Soft top and bottom fade mask for seamless optical roller illusion */
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+    }
+
+    .digit-glyph {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-sans);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "cv01" 1;
+      font-size: 1em;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--color-offwhite);
+      text-shadow: 0 0 28px rgba(139, 13, 26, 0.55), 0 4px 10px rgba(0, 0, 0, 0.9);
+      transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.48s cubic-bezier(0.16, 1, 0.3, 1), filter 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity, filter;
+    }
+
+    /* Slide States for Smooth Reverse (Countdown) Motion */
+    .digit-glyph.current {
+      transform: translateY(0);
+      opacity: 1;
+      filter: blur(0);
+    }
+
+    .digit-glyph.enter-from-top {
+      transform: translateY(-115%);
+      opacity: 0;
+      filter: blur(2px);
+    }
+
+    .digit-glyph.exit-to-bottom {
+      transform: translateY(115%);
+      opacity: 0;
+      filter: blur(2px);
+    }
+
+    .unit-label {
+      font-family: var(--font-display-tag);
+      font-size: clamp(0.7rem, 0.95vw, 0.82rem);
+      font-weight: 600;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(245, 242, 237, 0.46);
+      text-align: center;
+      margin-top: clamp(0.7rem, 1.4vw, 1.1rem);
+      transition: color 0.3s ease;
+    }
+
+    .unit-card:hover .unit-label {
+      color: var(--color-offwhite);
+    }
+
+    /* Steady Elegant Colon Separators */
+    .colon-separator {
+      font-family: var(--font-sans);
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-weight: 300;
+      color: var(--color-crimson-vivid);
+      text-shadow: 0 0 16px rgba(184, 20, 39, 0.7);
+      line-height: 1;
+      opacity: 0.85;
+      user-select: none;
+      padding-bottom: clamp(1.2rem, 2vw, 2rem);
+    }
+
+    /* Sleek Linear Progress Bar (depletes smoothly across 45 minutes) */
+    .progress-bar-container {
+      width: 100%;
+      max-width: 720px;
+      margin-top: clamp(1.2rem, 2.5vh, 2rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: var(--track-color);
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--color-crimson), var(--color-crimson-vivid));
+      box-shadow: 0 0 12px rgba(184, 20, 39, 0.85);
+      border-radius: 9999px;
+      transform-origin: left center;
+      transform: scaleX(1);
+      will-change: transform;
+    }
+
+    .time-up-badge {
+      font-family: var(--font-display-tag);
+      font-size: clamp(0.9rem, 1.3vw, 1.15rem);
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      background: var(--color-crimson);
+      border: 1.5px solid var(--color-crimson-vivid);
+      padding: 0.5rem 1.8rem;
+      border-radius: 9999px;
+      margin-top: 1.2rem;
+      box-shadow: 0 0 25px rgba(184, 20, 39, 0.85);
+      animation: completionPulse 1.2s ease-in-out infinite;
+    }
+
+    /* -------------------------------------------------------------
+       URGENT STATE (< 5 Minutes) & TIME'S UP
+    -------------------------------------------------------------- */
+    .urgent .digit-glyph {
+      color: var(--color-crimson-vivid);
+      animation: urgentGlowPulse 1.6s ease-in-out infinite;
+    }
+
+    .urgent .unit-card {
+      border-color: var(--color-crimson-vivid);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.9), 0 0 32px rgba(184, 20, 39, 0.5);
+    }
+
+    @keyframes urgentGlowPulse {
+      0%, 100% {
+        text-shadow: 0 0 25px rgba(184, 20, 39, 0.75), 0 0 50px rgba(139, 13, 26, 0.4);
+      }
+      50% {
+        text-shadow: 0 0 45px rgba(224, 6, 52, 0.95), 0 0 80px rgba(184, 20, 39, 0.7);
+      }
+    }
+
+    .times-up .digit-glyph {
+      color: var(--color-crimson-vivid);
+      animation: completionGlowPulse 1.2s ease-in-out infinite;
+    }
+
+    .times-up .unit-card {
+      border-color: var(--color-crimson-vivid);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.9), 0 0 45px rgba(184, 20, 39, 0.65);
+    }
+
+    @keyframes completionGlowPulse {
+      0%, 100% {
+        text-shadow: 0 0 25px rgba(184, 20, 39, 0.8);
+      }
+      50% {
+        text-shadow: 0 0 55px rgba(224, 6, 52, 1), 0 0 95px rgba(184, 20, 39, 0.85);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       CONTROLS
+    -------------------------------------------------------------- */
+    .controls-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.15rem;
+      margin-top: clamp(0.75rem, 2vh, 1.75rem);
+      min-height: 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: clamp(0.75rem, 1.5vh, 0.95rem) clamp(1.85rem, 2.8vw, 2.6rem);
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      outline: none;
+      border: 1.5px solid transparent;
+      user-select: none;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Primary Filled Crimson Red Button */
+    .btn-primary {
+      background-color: var(--color-crimson);
+      color: var(--color-offwhite);
+      border-color: rgba(245, 242, 237, 0.15);
+      box-shadow: var(--shadow-crimson), inset 0 1px 1px rgba(245, 242, 237, 0.25);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--color-crimson-vivid);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-crimson-hover), inset 0 1px 1px rgba(245, 242, 237, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Outlined Button (Pause / Secondary) */
+    .btn-outline {
+      background-color: transparent;
+      border-color: var(--color-crimson);
+      color: var(--color-offwhite);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--color-crimson-subtle);
+      border-color: var(--color-crimson-vivid);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 13, 26, 0.4);
+    }
+
+    .btn-outline:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Outlined Subtle Dark Button (Reset) */
+    .btn-subtle {
+      background-color: transparent;
+      border-color: rgba(245, 242, 237, 0.18);
+      color: var(--text-muted);
+    }
+
+    .btn-subtle:hover {
+      border-color: var(--color-crimson);
+      color: var(--color-offwhite);
+      background-color: var(--color-crimson-subtle);
+      transform: translateY(-2px);
+    }
+
+    .btn-subtle:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Helper utility for dynamic display */
+    .hidden {
+      display: none !important;
+    }
+
+    /* -------------------------------------------------------------
+       FOOTER & KEYBOARD HELPER
+    -------------------------------------------------------------- */
+    .footer-section {
+      text-align: center;
+      margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+    }
+
+    .keyboard-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: clamp(0.72rem, 0.95vw, 0.82rem);
+      color: var(--text-light);
+      letter-spacing: 0.05em;
+    }
+
+    .kbd {
+      display: inline-block;
+      padding: 0.18rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--color-offwhite);
+      background-color: rgba(245, 242, 237, 0.08);
+      border: 1px solid rgba(245, 242, 237, 0.16);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    /* -------------------------------------------------------------
+       RESPONSIVE ADJUSTMENTS
+    -------------------------------------------------------------- */
+    @media (max-width: 600px) {
+      .timer-display-group {
+        gap: 0.4rem;
+      }
+      .colon-separator {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+      }
+      .unit-card {
+        padding: 1rem 0.4rem 0.8rem;
+      }
+      .card-accent-rule {
+        width: 18px;
+        margin: 0.4rem auto;
+      }
+      .controls-wrapper {
+        flex-direction: column;
+        width: 100%;
+        max-width: 240px;
+      }
+      .btn {
+        width: 100%;
+      }
+      .keyboard-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Edge Crimson Pulse Vignette (Active on Time's Up) -->
+  <div id="ambientVignette" aria-hidden="true"></div>
+
+  <main class="app-viewport">
+    
+    <!-- Top Corner Actions (Audio Test & Fullscreen) -->
+    <header class="corner-actions">
+      <!-- Audio Cue preview button -->
+      <button id="soundBtn" class="icon-btn" title="Test Alert Sound" aria-label="Test Alert Chime">
+        <svg viewBox="0 0 24 24">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button id="fullscreenBtn" class="icon-btn" title="Toggle Fullscreen (Key: F)" aria-label="Toggle Fullscreen">
+        <svg id="fullscreenIconExpand" viewBox="0 0 24 24">
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+        </svg>
+        <svg id="fullscreenIconCompress" class="hidden" viewBox="0 0 24 24">
+          <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Event Branding Header -->
+    <section class="header-section">
+      <div class="fest-series-tag">Dexterity 2k26-27</div>
+      <h1 class="event-title">Vision to Visuals 2.0</h1>
+    </section>
+
+    <!-- Center Stage: Hours : Minutes : Seconds Cards with Smooth Digit Transition -->
+    <section class="timer-stage" id="timerStage">
+      <div class="timer-display-group">
+        
+        <!-- Hours Card -->
+        <div class="unit-card" id="cardHours">
+          <div class="digits-cluster">
+            <div class="digit-slot" id="slotH0"><div class="digit-glyph current">0</div></div>
+            <div class="digit-slot" id="slotH1"><div class="digit-glyph current">0</div></div>
+          </div>
+          <div class="unit-label">HOURS</div>
+        </div>
+
+        <div class="colon-separator">:</div>
+
+        <!-- Minutes Card -->
+        <div class="unit-card" id="cardMinutes">
+          <div class="digits-cluster">
+            <div class="digit-slot" id="slotM0"><div class="digit-glyph current">4</div></div>
+            <div class="digit-slot" id="slotM1"><div class="digit-glyph current">5</div></div>
+          </div>
+          <div class="unit-label">MINUTES</div>
+        </div>
+
+        <div class="colon-separator">:</div>
+
+        <!-- Seconds Card -->
+        <div class="unit-card" id="cardSeconds">
+          <div class="digits-cluster">
+            <div class="digit-slot" id="slotS0"><div class="digit-glyph current">0</div></div>
+            <div class="digit-slot" id="slotS1"><div class="digit-glyph current">0</div></div>
+          </div>
+          <div class="unit-label">SECONDS</div>
+        </div>
+
+      </div>
+
+      <!-- Linear Depleting Progress Bar -->
+      <div class="progress-bar-container">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <div class="time-up-badge hidden" id="timeUpBadge">TIME'S UP!</div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="controls-wrapper">
+        <!-- Initial Start Button -->
+        <button id="startBtn" class="btn btn-primary" aria-label="Start Timer">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon></svg>
+          <span>Start</span>
+        </button>
+
+        <!-- Active Mode: Pause / Resume Button -->
+        <button id="pauseBtn" class="btn btn-outline hidden" aria-label="Pause Timer">
+          <svg id="pauseIcon" viewBox="0 0 24 24">
+            <rect x="6" y="4" width="4" height="16" fill="currentColor"></rect>
+            <rect x="14" y="4" width="4" height="16" fill="currentColor"></rect>
+          </svg>
+          <svg id="resumeIcon" class="hidden" viewBox="0 0 24 24">
+            <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
+          </svg>
+          <span id="pauseBtnText">Pause</span>
+        </button>
+
+        <!-- Reset Button -->
+        <button id="resetBtn" class="btn btn-subtle hidden" aria-label="Reset Timer">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+          <span>Reset</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer with Keyboard Hints -->
+    <footer class="footer-section">
+      <div class="keyboard-hint">
+        <span>Press <kbd class="kbd">Space</kbd> to Start/Pause</span>
+        <span>•</span>
+        <span><kbd class="kbd">R</kbd> to Reset</span>
+        <span>•</span>
+        <span><kbd class="kbd">F</kbd> for Fullscreen</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    /* =====================================================================
+       CRIMSON & BLACK HH:MM:SS SMOOTH COUNTDOWN CONTROLLER
+       Smooth vertical digit slide transition on reverse countdown
+       Drift-free Date.now() timestamp calculations
+       Web Audio API Synthesizer (No external sound files required)
+       ===================================================================== */
+    
+    (function () {
+      'use strict';
+
+      // 45 minutes in milliseconds (45 * 60 * 1000 = 2,700,000 ms)
+      const TOTAL_DURATION_MS = 45 * 60 * 1000;
+      const URGENT_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes remaining
+
+      // Application State
+      let timerStatus = 'IDLE'; // 'IDLE' | 'RUNNING' | 'PAUSED' | 'COMPLETED'
+      let startTime = null;
+      let elapsedBeforeCurrentRun = 0;
+      let animationFrameId = null;
+
+      // Track individual digit characters for independent smooth rolling
+      let prevDigits = {
+        h0: '0', h1: '0',
+        m0: '4', m1: '5',
+        s0: '0', s1: '0'
+      };
+
+      // Web Audio Context for synthesized alerts
+      let audioCtx = null;
+
+      // DOM Elements
+      const slotH0 = document.getElementById('slotH0');
+      const slotH1 = document.getElementById('slotH1');
+      const slotM0 = document.getElementById('slotM0');
+      const slotM1 = document.getElementById('slotM1');
+      const slotS0 = document.getElementById('slotS0');
+      const slotS1 = document.getElementById('slotS1');
+      const progressBar = document.getElementById('progressBar');
+      const timeUpBadge = document.getElementById('timeUpBadge');
+      const timerStage = document.getElementById('timerStage');
+      
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const pauseBtnText = document.getElementById('pauseBtnText');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const resumeIcon = document.getElementById('resumeIcon');
+      
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const fullscreenIconExpand = document.getElementById('fullscreenIconExpand');
+      const fullscreenIconCompress = document.getElementById('fullscreenIconCompress');
+      const soundBtn = document.getElementById('soundBtn');
+
+      /* -------------------------------------------------------------
+         INDEPENDENT ROLLING DIGIT ODOMETER (Reverse / Countdown)
+         Only the changing digit slot rolls downward with smooth
+         optical fade masking and subtle motion blur dissipation.
+      -------------------------------------------------------------- */
+      function rollDigit(slot, newChar, isInstant = false) {
+        if (!slot) return;
+        const currentGlyph = slot.querySelector('.digit-glyph.current');
+
+        if (!currentGlyph || isInstant) {
+          slot.innerHTML = `<div class="digit-glyph current">${newChar}</div>`;
+          return;
+        }
+
+        if (currentGlyph.textContent === newChar) {
+          return;
+        }
+
+        // Clean up any old exiting glyphs before adding a new one
+        const oldExiting = slot.querySelectorAll('.digit-glyph.exit-to-bottom');
+        oldExiting.forEach(node => node.remove());
+
+        // Create incoming digit entering from top
+        const incomingGlyph = document.createElement('div');
+        incomingGlyph.className = 'digit-glyph enter-from-top';
+        incomingGlyph.textContent = newChar;
+        slot.appendChild(incomingGlyph);
+
+        // Force browser layout pass
+        void incomingGlyph.offsetWidth;
+
+        // Smoothly roll outgoing down and incoming into center
+        currentGlyph.className = 'digit-glyph exit-to-bottom';
+        incomingGlyph.className = 'digit-glyph current';
+
+        // Clean up outgoing node
+        setTimeout(() => {
+          if (currentGlyph && currentGlyph.parentNode === slot) {
+            slot.removeChild(currentGlyph);
+          }
+        }, 520);
+      }
+
+      /* -------------------------------------------------------------
+         WEB AUDIO API: CRISP CRIMSON CHIME SYNTHESIZER
+      -------------------------------------------------------------- */
+      function getAudioContext() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioCtx = new AudioContextClass();
+          }
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      function playAlertChime(isTest = false) {
+        try {
+          const ctx = getAudioContext();
+          if (!ctx) return;
+
+          const now = ctx.currentTime;
+          // Harmonic chord triad: A5 (880Hz), C#6 (1108Hz), E6 (1318Hz), A6 (1760Hz)
+          const notes = isTest 
+            ? [880, 1108, 1318] 
+            : [880, 1108, 1318, 1760, 1318, 1760];
+
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.16);
+
+            // Smooth exponential volume envelope
+            gain.gain.setValueAtTime(0.0001, now + idx * 0.16);
+            gain.gain.exponentialRampToValueAtTime(0.28, now + idx * 0.16 + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.16 + 0.55);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start(now + idx * 0.16);
+            osc.stop(now + idx * 0.16 + 0.6);
+          });
+        } catch (e) {
+          console.warn('Audio playback prevented or unsupported:', e);
+        }
+      }
+
+      /* -------------------------------------------------------------
+         ACCURATE TIMING & DISPLAY RENDERING
+      -------------------------------------------------------------- */
+      function getRemainingMs() {
+        if (timerStatus === 'IDLE') {
+          return TOTAL_DURATION_MS;
+        }
+        if (timerStatus === 'COMPLETED') {
+          return 0;
+        }
+        if (timerStatus === 'PAUSED') {
+          return Math.max(0, TOTAL_DURATION_MS - elapsedBeforeCurrentRun);
+        }
+        // When RUNNING
+        const now = Date.now();
+        const totalElapsed = elapsedBeforeCurrentRun + (now - startTime);
+        return Math.max(0, TOTAL_DURATION_MS - totalElapsed);
+      }
+
+      function updateUI() {
+        const remainingMs = getRemainingMs();
+        
+        // Convert to total whole seconds
+        const totalSeconds = Math.ceil(remainingMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const hStr = String(hours).padStart(2, '0');
+        const mStr = String(minutes).padStart(2, '0');
+        const sStr = String(seconds).padStart(2, '0');
+
+        // Roll each digit slot individually and smoothly
+        if (hStr[0] !== prevDigits.h0) { rollDigit(slotH0, hStr[0]); prevDigits.h0 = hStr[0]; }
+        if (hStr[1] !== prevDigits.h1) { rollDigit(slotH1, hStr[1]); prevDigits.h1 = hStr[1]; }
+        if (mStr[0] !== prevDigits.m0) { rollDigit(slotM0, mStr[0]); prevDigits.m0 = mStr[0]; }
+        if (mStr[1] !== prevDigits.m1) { rollDigit(slotM1, mStr[1]); prevDigits.m1 = mStr[1]; }
+        if (sStr[0] !== prevDigits.s0) { rollDigit(slotS0, sStr[0]); prevDigits.s0 = sStr[0]; }
+        if (sStr[1] !== prevDigits.s1) { rollDigit(slotS1, sStr[1]); prevDigits.s1 = sStr[1]; }
+
+        // GPU-accelerated sub-second linear progress (60/120fps hardware smooth)
+        const progressFraction = Math.max(0, Math.min(1, remainingMs / TOTAL_DURATION_MS));
+        progressBar.style.transform = `scaleX(${progressFraction})`;
+
+        // Urgent State Handling (< 5 minutes remaining)
+        if (timerStatus === 'RUNNING' && remainingMs <= URGENT_THRESHOLD_MS && remainingMs > 0) {
+          if (!timerStage.classList.contains('urgent')) {
+            timerStage.classList.add('urgent');
+          }
+        } else if (timerStatus === 'RUNNING') {
+          timerStage.classList.remove('urgent');
+        }
+
+        // Time's Up Trigger
+        if (timerStatus === 'RUNNING' && remainingMs <= 0) {
+          handleTimeUp();
+          return;
+        }
+
+        // Keep loop active
+        if (timerStatus === 'RUNNING') {
+          animationFrameId = requestAnimationFrame(updateUI);
+        }
+      }
+
+      /* -------------------------------------------------------------
+         TIMER CONTROL ACTIONS
+      -------------------------------------------------------------- */
+      function startTimer() {
+        getAudioContext(); // Prepare Web Audio
+        if (timerStatus === 'RUNNING') return;
+
+        timerStatus = 'RUNNING';
+        startTime = Date.now();
+
+        // Control UI adjustments
+        startBtn.classList.add('hidden');
+        pauseBtn.classList.remove('hidden');
+        resetBtn.classList.remove('hidden');
+
+        // Reset pause button state
+        pauseBtn.classList.remove('btn-primary');
+        pauseBtn.classList.add('btn-outline');
+        pauseBtnText.textContent = 'Pause';
+        pauseIcon.classList.remove('hidden');
+        resumeIcon.classList.add('hidden');
+
+        timeUpBadge.classList.add('hidden');
+        document.body.classList.remove('times-up');
+        timerStage.classList.remove('times-up');
+
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(updateUI);
+      }
+
+      function pauseTimer() {
+        if (timerStatus !== 'RUNNING') return;
+
+        timerStatus = 'PAUSED';
+        elapsedBeforeCurrentRun += (Date.now() - startTime);
+        cancelAnimationFrame(animationFrameId);
+
+        // Update Pause/Resume button to filled "Resume" state
+        pauseBtn.classList.remove('btn-outline');
+        pauseBtn.classList.add('btn-primary');
+        pauseBtnText.textContent = 'Resume';
+        pauseIcon.classList.add('hidden');
+        resumeIcon.classList.remove('hidden');
+
+        timerStage.classList.remove('urgent');
+      }
+
+      function resumeTimer() {
+        if (timerStatus !== 'PAUSED') return;
+
+        timerStatus = 'RUNNING';
+        startTime = Date.now();
+
+        // Update button back to outlined "Pause" state
+        pauseBtn.classList.remove('btn-primary');
+        pauseBtn.classList.add('btn-outline');
+        pauseBtnText.textContent = 'Pause';
+        pauseIcon.classList.remove('hidden');
+        resumeIcon.classList.add('hidden');
+
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(updateUI);
+      }
+
+      function togglePlayPause() {
+        if (timerStatus === 'IDLE') {
+          startTimer();
+        } else if (timerStatus === 'RUNNING') {
+          pauseTimer();
+        } else if (timerStatus === 'PAUSED') {
+          resumeTimer();
+        } else if (timerStatus === 'COMPLETED') {
+          resetTimer();
+        }
+      }
+
+      function resetTimer() {
+        cancelAnimationFrame(animationFrameId);
+        timerStatus = 'IDLE';
+        startTime = null;
+        elapsedBeforeCurrentRun = 0;
+
+        // Reset UI visuals
+        timeUpBadge.classList.add('hidden');
+        document.body.classList.remove('times-up');
+        timerStage.classList.remove('urgent', 'times-up');
+
+        // Reset controls
+        startBtn.classList.remove('hidden');
+        pauseBtn.classList.add('hidden');
+        resetBtn.classList.add('hidden');
+
+        // Instant reset of all digit slots
+        prevDigits = { h0: '0', h1: '0', m0: '4', m1: '5', s0: '0', s1: '0' };
+        rollDigit(slotH0, '0', true);
+        rollDigit(slotH1, '0', true);
+        rollDigit(slotM0, '4', true);
+        rollDigit(slotM1, '5', true);
+        rollDigit(slotS0, '0', true);
+        rollDigit(slotS1, '0', true);
+
+        progressBar.style.transform = 'scaleX(1)';
+      }
+
+      function handleTimeUp() {
+        cancelAnimationFrame(animationFrameId);
+        timerStatus = 'COMPLETED';
+
+        prevDigits = { h0: '0', h1: '0', m0: '0', m1: '0', s0: '0', s1: '0' };
+        rollDigit(slotH0, '0');
+        rollDigit(slotH1, '0');
+        rollDigit(slotM0, '0');
+        rollDigit(slotM1, '0');
+        rollDigit(slotS0, '0');
+        rollDigit(slotS1, '0');
+
+        progressBar.style.transform = 'scaleX(0)';
+        timeUpBadge.classList.remove('hidden');
+
+        document.body.classList.add('times-up');
+        timerStage.classList.remove('urgent');
+        timerStage.classList.add('times-up');
+
+        // Show Reset button only
+        pauseBtn.classList.add('hidden');
+        resetBtn.classList.remove('hidden');
+        resetBtn.classList.remove('btn-subtle');
+        resetBtn.classList.add('btn-primary');
+
+        // Play alert chime
+        playAlertChime(false);
+      }
+
+      /* -------------------------------------------------------------
+         FULLSCREEN API TOGGLE
+      -------------------------------------------------------------- */
+      function toggleFullscreen() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          const docEl = document.documentElement;
+          if (docEl.requestFullscreen) {
+            docEl.requestFullscreen().catch(err => console.log(err));
+          } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(err => console.log(err));
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        }
+      }
+
+      function onFullscreenChange() {
+        const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        if (isFS) {
+          fullscreenIconExpand.classList.add('hidden');
+          fullscreenIconCompress.classList.remove('hidden');
+          fullscreenBtn.title = 'Exit Fullscreen (Key: F or Esc)';
+        } else {
+          fullscreenIconExpand.classList.remove('hidden');
+          fullscreenIconCompress.classList.add('hidden');
+          fullscreenBtn.title = 'Toggle Fullscreen (Key: F)';
+        }
+      }
+
+      /* -------------------------------------------------------------
+         EVENT LISTENERS & KEYBOARD SHORTCUTS
+      -------------------------------------------------------------- */
+      startBtn.addEventListener('click', startTimer);
+
+      pauseBtn.addEventListener('click', function () {
+        if (timerStatus === 'RUNNING') {
+          pauseTimer();
+        } else if (timerStatus === 'PAUSED') {
+          resumeTimer();
+        }
+      });
+
+      resetBtn.addEventListener('click', function () {
+        resetBtn.classList.remove('btn-primary');
+        resetBtn.classList.add('btn-subtle');
+        resetTimer();
+      });
+
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', onFullscreenChange);
+      document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+
+      soundBtn.addEventListener('click', function () {
+        getAudioContext();
+        playAlertChime(true);
+      });
+
+      // Keyboard navigation
+      window.addEventListener('keydown', function (e) {
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          togglePlayPause();
+        } else if (e.code === 'KeyR') {
+          e.preventDefault();
+          resetBtn.classList.remove('btn-primary');
+          resetBtn.classList.add('btn-subtle');
+          resetTimer();
+        } else if (e.code === 'KeyF') {
+          e.preventDefault();
+          toggleFullscreen();
+        }
+      });
+
+      // Tab visibility change safeguard
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && timerStatus === 'RUNNING') {
+          updateUI();
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
