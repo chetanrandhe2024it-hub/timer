@@ -6,7 +6,7 @@
   <title>Vision to Visuals 2.0 | Dexterity 2k26-27 Countdown Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
   
   <style>
     /* -------------------------------------------------------------
@@ -43,6 +43,7 @@
       --font-serif: 'Playfair Display', Georgia, serif;
       --font-display-tag: 'Cinzel', serif;
       --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-timer: 'Oswald', 'Barlow Condensed', 'Arial Narrow', sans-serif;
       
       --shadow-accent: 0 8px 32px rgba(84, 131, 179, 0.45);
       --shadow-accent-hover: 0 12px 42px rgba(125, 160, 202, 0.65);
@@ -148,24 +149,24 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(245, 242, 237, 0.04);
-      border: 1px solid rgba(245, 242, 237, 0.12);
+      background: rgba(193, 232, 255, 0.05);
+      border: 1px solid rgba(193, 232, 255, 0.16);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       color: var(--text-muted);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 18px rgba(2, 16, 36, 0.7);
       backdrop-filter: blur(8px);
     }
 
     .icon-btn:hover {
-      color: var(--color-offwhite);
-      border-color: var(--color-crimson);
-      background: var(--color-crimson-subtle);
+      color: var(--color-ice);
+      border-color: var(--color-frost);
+      background: var(--color-accent-subtle);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(139, 13, 26, 0.4);
+      box-shadow: 0 4px 16px rgba(84, 131, 179, 0.4);
     }
 
     .icon-btn:active {
@@ -203,19 +204,19 @@
       text-transform: uppercase;
       color: #FFFFFF;
       padding: clamp(0.7rem, 1.3vh, 0.95rem) clamp(1.8rem, 2.8vw, 2.6rem);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1.8px solid #FFFFFF;
+      background: rgba(193, 232, 255, 0.08);
+      border: 1.8px solid var(--color-ice);
       border-radius: 9999px;
       margin-bottom: clamp(1.1rem, 2.2vh, 1.7rem);
-      box-shadow: 0 6px 28px rgba(255, 255, 255, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-      text-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+      box-shadow: 0 6px 28px rgba(125, 160, 202, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      text-shadow: 0 0 16px rgba(193, 232, 255, 0.5);
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
 
     .fest-series-tag:hover {
-      background: rgba(255, 255, 255, 0.14);
-      box-shadow: 0 8px 36px rgba(255, 255, 255, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      background: rgba(193, 232, 255, 0.16);
+      box-shadow: 0 8px 36px rgba(193, 232, 255, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.45);
       transform: translateY(-2px);
     }
 
@@ -225,8 +226,8 @@
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: #FFFFFF;
-      box-shadow: 0 0 10px #FFFFFF, 0 0 18px rgba(255, 255, 255, 0.9);
+      background: var(--color-ice);
+      box-shadow: 0 0 10px var(--color-ice), 0 0 18px rgba(125, 160, 202, 0.9);
     }
 
     .event-title {
@@ -235,8 +236,8 @@
       font-weight: 600;
       letter-spacing: -0.015em;
       line-height: 1.12;
-      color: var(--color-offwhite);
-      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.8);
+      color: var(--text-main);
+      text-shadow: 0 2px 18px rgba(2, 16, 36, 0.9);
     }
 
     /* -------------------------------------------------------------
@@ -251,41 +252,6 @@
       position: relative;
       width: 100%;
       max-width: 980px;
-    }
-
-    /* Subtle Cherry Red Gradient Glow behind the timer */
-    .timer-stage::before {
-      content: '';
-      position: absolute;
-      top: 36%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: clamp(340px, 72vw, 880px);
-      height: clamp(220px, 36vw, 440px);
-      background: radial-gradient(ellipse at center, rgba(200, 16, 46, 0.28) 0%, rgba(139, 13, 26, 0.16) 42%, rgba(11, 11, 11, 0) 74%);
-      filter: blur(52px);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.9;
-      transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
-    }
-
-    .urgent.timer-stage::before {
-      background: radial-gradient(ellipse at center, rgba(224, 6, 52, 0.45) 0%, rgba(184, 20, 39, 0.24) 48%, rgba(11, 11, 11, 0) 76%);
-      filter: blur(58px);
-      animation: cherryAmbientGlowPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes cherryAmbientGlowPulse {
-      0%, 100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.88;
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.08);
-        opacity: 1;
-      }
     }
 
     /* Cards Cluster */
@@ -306,10 +272,10 @@
       max-width: clamp(140px, 22vw, 220px);
       min-width: clamp(92px, 16vw, 150px);
       background: var(--bg-card);
-      border: 1px solid rgba(139, 13, 26, 0.35);
+      border: 1px solid rgba(84, 131, 179, 0.4);
       border-radius: clamp(16px, 2.4vw, 24px);
-      padding: clamp(1.4rem, 2.6vw, 2.4rem) clamp(0.5rem, 1.4vw, 1.2rem) clamp(1.1rem, 2vw, 1.6rem);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(245, 242, 237, 0.1), 0 0 20px rgba(139, 13, 26, 0.08);
+      padding: clamp(1.4rem, 2.6vw, 2.5rem) clamp(0.5rem, 1.4vw, 1.2rem) clamp(1.1rem, 2vw, 1.6rem);
+      box-shadow: 0 18px 45px rgba(2, 16, 36, 0.9), inset 0 1px 0 rgba(193, 232, 255, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -325,13 +291,13 @@
       left: 15%;
       right: 15%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(245, 242, 237, 0.25), transparent);
+      background: linear-gradient(90deg, transparent, rgba(193, 232, 255, 0.3), transparent);
     }
 
     .unit-card:hover {
-      border-color: var(--color-crimson-vivid);
+      border-color: var(--color-frost);
       transform: translateY(-3px);
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.95), 0 0 32px rgba(184, 20, 39, 0.25);
+      box-shadow: 0 22px 55px rgba(2, 16, 36, 0.98);
     }
 
     /* Smooth Sliding / Rolling Digit Window */
@@ -341,14 +307,14 @@
       justify-content: center;
       gap: clamp(2px, 0.4vw, 6px);
       width: 100%;
-      height: clamp(3.6rem, 8.5vw, 6.8rem);
-      font-size: clamp(3.4rem, 8vw, 6.5rem);
+      height: clamp(4.1rem, 9.4vw, 7.6rem);
+      font-size: clamp(3.8rem, 8.8vw, 7.2rem);
     }
 
     .digit-slot {
       position: relative;
-      width: clamp(2.2rem, 5vw, 4.2rem);
-      flex: 0 0 clamp(2.2rem, 5vw, 4.2rem);
+      width: clamp(2.3rem, 5.2vw, 4.4rem);
+      flex: 0 0 clamp(2.3rem, 5.2vw, 4.4rem);
       height: 100%;
       overflow: hidden;
       display: flex;
@@ -356,8 +322,8 @@
       align-items: center;
       font-size: 1em;
       /* Soft top and bottom fade mask for seamless optical roller illusion */
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
     }
 
     .digit-glyph {
@@ -366,15 +332,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--font-sans);
+      font-family: var(--font-timer);
       font-variant-numeric: tabular-nums;
       font-feature-settings: "tnum" 1, "cv01" 1;
       font-size: 1em;
-      font-weight: 700;
-      letter-spacing: -0.04em;
+      font-weight: 600;
+      letter-spacing: 0.01em;
       line-height: 1;
-      color: var(--color-offwhite);
-      text-shadow: 0 0 28px rgba(139, 13, 26, 0.55), 0 4px 10px rgba(0, 0, 0, 0.9);
+      color: var(--text-main);
+      text-shadow: 0 3px 8px rgba(2, 16, 36, 0.6);
       transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.48s cubic-bezier(0.16, 1, 0.3, 1), filter 0.48s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform, opacity, filter;
     }
@@ -404,27 +370,27 @@
       font-weight: 600;
       letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: rgba(245, 242, 237, 0.46);
+      color: rgba(193, 232, 255, 0.46);
       text-align: center;
       margin-top: clamp(0.7rem, 1.4vw, 1.1rem);
       transition: color 0.3s ease;
     }
 
     .unit-card:hover .unit-label {
-      color: var(--color-offwhite);
+      color: var(--color-ice);
     }
 
     /* Steady Elegant Colon Separators */
     .colon-separator {
-      font-family: var(--font-sans);
-      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-family: var(--font-timer);
+      font-size: clamp(2.8rem, 6.8vw, 5.4rem);
       font-weight: 300;
-      color: var(--color-crimson-vivid);
-      text-shadow: 0 0 16px rgba(184, 20, 39, 0.7);
+      color: var(--color-frost);
+      text-shadow: 0 2px 6px rgba(2, 16, 36, 0.6);
       line-height: 1;
       opacity: 0.85;
       user-select: none;
-      padding-bottom: clamp(1.2rem, 2vw, 2rem);
+      padding-bottom: clamp(1.3rem, 2.2vw, 2.2rem);
     }
 
     /* Sleek Linear Progress Bar (depletes smoothly across 45 minutes) */
@@ -452,8 +418,8 @@
     .progress-fill {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, var(--color-crimson), var(--color-crimson-vivid));
-      box-shadow: 0 0 12px rgba(184, 20, 39, 0.85);
+      background: linear-gradient(90deg, var(--color-navy), var(--color-steel), var(--color-frost), var(--color-ice));
+      box-shadow: 0 0 14px rgba(125, 160, 202, 0.85);
       border-radius: 9999px;
       transform-origin: left center;
       transform: scaleX(1);
@@ -466,54 +432,187 @@
       font-weight: 700;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: #FFFFFF;
-      background: var(--color-crimson);
-      border: 1.5px solid var(--color-crimson-vivid);
+      color: #021024;
+      background: var(--color-ice);
+      border: 1.5px solid #FFFFFF;
       padding: 0.5rem 1.8rem;
       border-radius: 9999px;
       margin-top: 1.2rem;
-      box-shadow: 0 0 25px rgba(184, 20, 39, 0.85);
+      box-shadow: 0 0 28px rgba(193, 232, 255, 0.9);
       animation: completionPulse 1.2s ease-in-out infinite;
+    }
+
+    /* -------------------------------------------------------------
+       MANUAL TIME ADJUSTER (Active only in IDLE state before start)
+    -------------------------------------------------------------- */
+    .time-adjust-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: clamp(1rem, 2.2vh, 1.6rem);
+      padding: clamp(0.75rem, 1.4vh, 1rem) clamp(1.4rem, 2.6vw, 2.2rem);
+      background: rgba(5, 38, 89, 0.4);
+      border: 1px solid rgba(84, 131, 179, 0.35);
+      border-radius: 9999px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 28px rgba(2, 16, 36, 0.65), inset 0 1px 0 rgba(193, 232, 255, 0.12);
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .time-adjust-bar.hidden-bar {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px) scale(0.96);
+      display: none !important;
+    }
+
+    .adjust-inputs-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+    }
+
+    .adjust-input-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .adjust-input-col input {
+      width: clamp(54px, 5.8vw, 68px);
+      height: clamp(38px, 4.4vh, 46px);
+      background: rgba(2, 16, 36, 0.7);
+      border: 1.5px solid rgba(84, 131, 179, 0.45);
+      border-radius: 10px;
+      color: var(--color-ice);
+      font-family: var(--font-sans);
+      font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+      font-weight: 700;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
+    }
+
+    .adjust-input-col input::-webkit-inner-spin-button,
+    .adjust-input-col input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .adjust-input-col input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .adjust-input-col input:hover {
+      border-color: var(--color-frost);
+      background: rgba(2, 16, 36, 0.9);
+    }
+
+    .adjust-input-col input:focus {
+      border-color: var(--color-ice);
+      box-shadow: 0 0 16px rgba(125, 160, 202, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.6);
+      background: rgba(2, 16, 36, 0.95);
+    }
+
+    .adjust-sub {
+      font-family: var(--font-display-tag);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(193, 232, 255, 0.55);
+    }
+
+    .adjust-colon {
+      font-family: var(--font-sans);
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--color-frost);
+      margin-top: -0.85rem;
+      opacity: 0.8;
+      user-select: none;
+    }
+
+    .preset-chips-group {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .preset-chip {
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0.28rem 0.85rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(84, 131, 179, 0.35);
+      background: rgba(193, 232, 255, 0.05);
+      color: rgba(193, 232, 255, 0.75);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+    }
+
+    .preset-chip:hover {
+      background: rgba(84, 131, 179, 0.22);
+      border-color: var(--color-frost);
+      color: var(--color-ice);
+      transform: translateY(-1px);
+    }
+
+    .preset-chip.active {
+      background: var(--color-steel);
+      border-color: var(--color-frost);
+      color: #021024;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(84, 131, 179, 0.4);
     }
 
     /* -------------------------------------------------------------
        URGENT STATE (< 5 Minutes) & TIME'S UP
     -------------------------------------------------------------- */
     .urgent .digit-glyph {
-      color: var(--color-crimson-vivid);
+      color: #FFFFFF;
       animation: urgentGlowPulse 1.6s ease-in-out infinite;
     }
 
     .urgent .unit-card {
-      border-color: var(--color-crimson-vivid);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.9), 0 0 32px rgba(184, 20, 39, 0.5);
+      border-color: var(--color-frost);
+      box-shadow: 0 18px 45px rgba(2, 16, 36, 0.9), 0 0 32px rgba(125, 160, 202, 0.5);
     }
 
     @keyframes urgentGlowPulse {
       0%, 100% {
-        text-shadow: 0 0 25px rgba(184, 20, 39, 0.75), 0 0 50px rgba(139, 13, 26, 0.4);
+        text-shadow: 0 0 25px rgba(125, 160, 202, 0.8), 0 0 50px rgba(84, 131, 179, 0.45);
       }
       50% {
-        text-shadow: 0 0 45px rgba(224, 6, 52, 0.95), 0 0 80px rgba(184, 20, 39, 0.7);
+        text-shadow: 0 0 45px rgba(193, 232, 255, 0.98), 0 0 80px rgba(125, 160, 202, 0.75);
       }
     }
 
     .times-up .digit-glyph {
-      color: var(--color-crimson-vivid);
+      color: var(--color-ice);
       animation: completionGlowPulse 1.2s ease-in-out infinite;
     }
 
     .times-up .unit-card {
-      border-color: var(--color-crimson-vivid);
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.9), 0 0 45px rgba(184, 20, 39, 0.65);
+      border-color: var(--color-ice);
+      box-shadow: 0 18px 50px rgba(2, 16, 36, 0.95), 0 0 45px rgba(193, 232, 255, 0.65);
     }
 
     @keyframes completionGlowPulse {
       0%, 100% {
-        text-shadow: 0 0 25px rgba(184, 20, 39, 0.8);
+        text-shadow: 0 0 25px rgba(125, 160, 202, 0.85);
       }
       50% {
-        text-shadow: 0 0 55px rgba(224, 6, 52, 1), 0 0 95px rgba(184, 20, 39, 0.85);
+        text-shadow: 0 0 55px rgba(193, 232, 255, 1), 0 0 95px rgba(125, 160, 202, 0.9);
       }
     }
 
@@ -550,18 +649,19 @@
       backdrop-filter: blur(10px);
     }
 
-    /* Primary Filled Crimson Red Button */
+    /* Primary Filled Ocean Blue Button */
     .btn-primary {
-      background-color: var(--color-crimson);
-      color: var(--color-offwhite);
-      border-color: rgba(245, 242, 237, 0.15);
-      box-shadow: var(--shadow-crimson), inset 0 1px 1px rgba(245, 242, 237, 0.25);
+      background-color: var(--color-steel);
+      color: #021024;
+      border-color: var(--color-frost);
+      font-weight: 700;
+      box-shadow: 0 8px 32px rgba(84, 131, 179, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.45);
     }
 
     .btn-primary:hover {
-      background-color: var(--color-crimson-vivid);
+      background-color: var(--color-frost);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-crimson-hover), inset 0 1px 1px rgba(245, 242, 237, 0.4);
+      box-shadow: 0 12px 42px rgba(125, 160, 202, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.6);
     }
 
     .btn-primary:active {
@@ -571,16 +671,16 @@
     /* Outlined Button (Pause / Secondary) */
     .btn-outline {
       background-color: transparent;
-      border-color: var(--color-crimson);
-      color: var(--color-offwhite);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      border-color: var(--color-steel);
+      color: var(--color-ice);
+      box-shadow: 0 4px 16px rgba(2, 16, 36, 0.6);
     }
 
     .btn-outline:hover {
-      background-color: var(--color-crimson-subtle);
-      border-color: var(--color-crimson-vivid);
+      background-color: var(--color-accent-subtle);
+      border-color: var(--color-frost);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(139, 13, 26, 0.4);
+      box-shadow: 0 6px 20px rgba(84, 131, 179, 0.45);
     }
 
     .btn-outline:active {
@@ -590,14 +690,14 @@
     /* Outlined Subtle Dark Button (Reset) */
     .btn-subtle {
       background-color: transparent;
-      border-color: rgba(245, 242, 237, 0.18);
+      border-color: rgba(193, 232, 255, 0.18);
       color: var(--text-muted);
     }
 
     .btn-subtle:hover {
-      border-color: var(--color-crimson);
-      color: var(--color-offwhite);
-      background-color: var(--color-crimson-subtle);
+      border-color: var(--color-steel);
+      color: var(--color-ice);
+      background-color: var(--color-accent-subtle);
       transform: translateY(-2px);
     }
 
@@ -626,6 +726,7 @@
     .footer-section {
       text-align: center;
       margin-bottom: clamp(0.5rem, 1.5vh, 1rem);
+      min-height: 24px;
     }
 
     .keyboard-hint {
@@ -635,6 +736,13 @@
       font-size: clamp(0.72rem, 0.95vw, 0.82rem);
       color: var(--text-light);
       letter-spacing: 0.05em;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .keyboard-hint.hidden-hint {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
     }
 
     .kbd {
@@ -643,11 +751,11 @@
       font-size: 0.72rem;
       font-weight: 600;
       font-family: inherit;
-      color: var(--color-offwhite);
-      background-color: rgba(245, 242, 237, 0.08);
-      border: 1px solid rgba(245, 242, 237, 0.16);
+      color: var(--color-ice);
+      background-color: rgba(193, 232, 255, 0.08);
+      border: 1px solid rgba(193, 232, 255, 0.16);
       border-radius: 4px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 1px 3px rgba(2, 16, 36, 0.5);
     }
 
     /* -------------------------------------------------------------
@@ -680,7 +788,7 @@
 </head>
 <body>
 
-  <!-- Screen Edge Crimson Pulse Vignette (Active on Time's Up) -->
+  <!-- Screen Edge Ambient Pulse Vignette (Active on Time's Up) -->
   <div id="ambientVignette" aria-hidden="true"></div>
 
   <main class="app-viewport">
@@ -757,6 +865,32 @@
         <div class="time-up-badge hidden" id="timeUpBadge">TIME'S UP!</div>
       </div>
 
+      <!-- Manual Duration Adjuster (Active only in starting/IDLE state) -->
+      <div class="time-adjust-bar" id="timeAdjustBar">
+        <div class="adjust-inputs-group">
+          <div class="adjust-input-col">
+            <input type="number" id="inputHours" min="0" max="99" value="0" aria-label="Set Hours">
+            <span class="adjust-sub">HR</span>
+          </div>
+          <span class="adjust-colon">:</span>
+          <div class="adjust-input-col">
+            <input type="number" id="inputMinutes" min="0" max="59" value="45" aria-label="Set Minutes">
+            <span class="adjust-sub">MIN</span>
+          </div>
+          <span class="adjust-colon">:</span>
+          <div class="adjust-input-col">
+            <input type="number" id="inputSeconds" min="0" max="59" value="0" aria-label="Set Seconds">
+            <span class="adjust-sub">SEC</span>
+          </div>
+        </div>
+        <div class="preset-chips-group">
+          <button type="button" class="preset-chip" data-h="0" data-m="15" data-s="0">15m</button>
+          <button type="button" class="preset-chip" data-h="0" data-m="30" data-s="0">30m</button>
+          <button type="button" class="preset-chip active" data-h="0" data-m="45" data-s="0">45m</button>
+          <button type="button" class="preset-chip" data-h="1" data-m="0" data-s="0">60m</button>
+        </div>
+      </div>
+
       <!-- Controls Row -->
       <div class="controls-wrapper">
         <!-- Initial Start Button -->
@@ -790,7 +924,7 @@
 
     <!-- Footer with Keyboard Hints -->
     <footer class="footer-section">
-      <div class="keyboard-hint">
+      <div class="keyboard-hint" id="keyboardHint">
         <span>Press <kbd class="kbd">Space</kbd> to Start/Pause</span>
         <span>•</span>
         <span><kbd class="kbd">R</kbd> to Reset</span>
@@ -803,7 +937,8 @@
 
   <script>
     /* =====================================================================
-       CRIMSON & BLACK HH:MM:SS SMOOTH COUNTDOWN CONTROLLER
+       MIDNIGHT & ICE BLUE HH:MM:SS SMOOTH COUNTDOWN CONTROLLER
+       Palette: #021024, #052659, #5483B3, #7DA0CA, #C1E8FF
        Smooth vertical digit slide transition on reverse countdown
        Drift-free Date.now() timestamp calculations
        Web Audio API Synthesizer (No external sound files required)
@@ -812,9 +947,11 @@
     (function () {
       'use strict';
 
-      // 45 minutes in milliseconds (45 * 60 * 1000 = 2,700,000 ms)
-      const TOTAL_DURATION_MS = 45 * 60 * 1000;
-      const URGENT_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes remaining
+      // Configured duration state (default 45 minutes)
+      let configuredHours = 0;
+      let configuredMinutes = 45;
+      let configuredSeconds = 0;
+      let totalDurationMs = (0 * 3600 + 45 * 60 + 0) * 1000;
 
       // Application State
       let timerStatus = 'IDLE'; // 'IDLE' | 'RUNNING' | 'PAUSED' | 'COMPLETED'
@@ -843,6 +980,12 @@
       const timeUpBadge = document.getElementById('timeUpBadge');
       const timerStage = document.getElementById('timerStage');
       
+      const timeAdjustBar = document.getElementById('timeAdjustBar');
+      const inputHours = document.getElementById('inputHours');
+      const inputMinutes = document.getElementById('inputMinutes');
+      const inputSeconds = document.getElementById('inputSeconds');
+      const presetChips = document.querySelectorAll('.preset-chip');
+
       const startBtn = document.getElementById('startBtn');
       const pauseBtn = document.getElementById('pauseBtn');
       const resetBtn = document.getElementById('resetBtn');
@@ -854,6 +997,7 @@
       const fullscreenIconExpand = document.getElementById('fullscreenIconExpand');
       const fullscreenIconCompress = document.getElementById('fullscreenIconCompress');
       const soundBtn = document.getElementById('soundBtn');
+      const keyboardHint = document.getElementById('keyboardHint');
 
       /* -------------------------------------------------------------
          INDEPENDENT ROLLING DIGIT ODOMETER (Reverse / Countdown)
@@ -899,7 +1043,7 @@
       }
 
       /* -------------------------------------------------------------
-         WEB AUDIO API: CRISP CRIMSON CHIME SYNTHESIZER
+         WEB AUDIO API: CRISP HARMONIC CHIME SYNTHESIZER
       -------------------------------------------------------------- */
       function getAudioContext() {
         if (!audioCtx) {
@@ -949,22 +1093,76 @@
       }
 
       /* -------------------------------------------------------------
+         CONFIGURABLE DURATION CONTROLLER (Active only in IDLE state)
+         Allows manual input before start; locks completely once running.
+      -------------------------------------------------------------- */
+      function updateConfiguredDuration(h, m, s) {
+        if (timerStatus !== 'IDLE') return; // Strictly locked when running or paused
+
+        configuredHours = Math.max(0, Math.min(99, parseInt(h, 10) || 0));
+        configuredMinutes = Math.max(0, Math.min(59, parseInt(m, 10) || 0));
+        configuredSeconds = Math.max(0, Math.min(59, parseInt(s, 10) || 0));
+
+        totalDurationMs = (configuredHours * 3600 + configuredMinutes * 60 + configuredSeconds) * 1000;
+        if (totalDurationMs <= 0) {
+          totalDurationMs = 1000; // minimum safeguard
+        }
+
+        // Sync inputs if not currently active
+        if (inputHours && inputHours !== document.activeElement) inputHours.value = configuredHours;
+        if (inputMinutes && inputMinutes !== document.activeElement) inputMinutes.value = configuredMinutes;
+        if (inputSeconds && inputSeconds !== document.activeElement) inputSeconds.value = configuredSeconds;
+
+        // Sync preset chips highlight
+        presetChips.forEach(chip => {
+          const chipH = parseInt(chip.getAttribute('data-h'), 10);
+          const chipM = parseInt(chip.getAttribute('data-m'), 10);
+          const chipS = parseInt(chip.getAttribute('data-s'), 10);
+          if (chipH === configuredHours && chipM === configuredMinutes && chipS === configuredSeconds) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+
+        // Instant update of digits display while in IDLE
+        const hStr = String(configuredHours).padStart(2, '0');
+        const mStr = String(configuredMinutes).padStart(2, '0');
+        const sStr = String(configuredSeconds).padStart(2, '0');
+        prevDigits = {
+          h0: hStr[0], h1: hStr[1],
+          m0: mStr[0], m1: mStr[1],
+          s0: sStr[0], s1: sStr[1]
+        };
+        rollDigit(slotH0, hStr[0], true);
+        rollDigit(slotH1, hStr[1], true);
+        rollDigit(slotM0, mStr[0], true);
+        rollDigit(slotM1, mStr[1], true);
+        rollDigit(slotS0, sStr[0], true);
+        rollDigit(slotS1, sStr[1], true);
+      }
+
+      function getUrgentThresholdMs() {
+        return Math.max(10 * 1000, Math.min(5 * 60 * 1000, totalDurationMs * 0.2));
+      }
+
+      /* -------------------------------------------------------------
          ACCURATE TIMING & DISPLAY RENDERING
       -------------------------------------------------------------- */
       function getRemainingMs() {
         if (timerStatus === 'IDLE') {
-          return TOTAL_DURATION_MS;
+          return totalDurationMs;
         }
         if (timerStatus === 'COMPLETED') {
           return 0;
         }
         if (timerStatus === 'PAUSED') {
-          return Math.max(0, TOTAL_DURATION_MS - elapsedBeforeCurrentRun);
+          return Math.max(0, totalDurationMs - elapsedBeforeCurrentRun);
         }
         // When RUNNING
         const now = Date.now();
         const totalElapsed = elapsedBeforeCurrentRun + (now - startTime);
-        return Math.max(0, TOTAL_DURATION_MS - totalElapsed);
+        return Math.max(0, totalDurationMs - totalElapsed);
       }
 
       function updateUI() {
@@ -989,11 +1187,12 @@
         if (sStr[1] !== prevDigits.s1) { rollDigit(slotS1, sStr[1]); prevDigits.s1 = sStr[1]; }
 
         // GPU-accelerated sub-second linear progress (60/120fps hardware smooth)
-        const progressFraction = Math.max(0, Math.min(1, remainingMs / TOTAL_DURATION_MS));
+        const progressFraction = Math.max(0, Math.min(1, remainingMs / totalDurationMs));
         progressBar.style.transform = `scaleX(${progressFraction})`;
 
-        // Urgent State Handling (< 5 minutes remaining)
-        if (timerStatus === 'RUNNING' && remainingMs <= URGENT_THRESHOLD_MS && remainingMs > 0) {
+        // Urgent State Handling (Adaptive threshold)
+        const urgentThreshold = getUrgentThresholdMs();
+        if (timerStatus === 'RUNNING' && remainingMs <= urgentThreshold && remainingMs > 0) {
           if (!timerStage.classList.contains('urgent')) {
             timerStage.classList.add('urgent');
           }
@@ -1038,6 +1237,16 @@
         timeUpBadge.classList.add('hidden');
         document.body.classList.remove('times-up');
         timerStage.classList.remove('times-up');
+
+        // Lock and hide manual duration controls once timer starts
+        if (timeAdjustBar) {
+          timeAdjustBar.classList.add('hidden-bar');
+        }
+
+        // Hide keyboard instructions once timer has started
+        if (keyboardHint) {
+          keyboardHint.classList.add('hidden-hint');
+        }
 
         cancelAnimationFrame(animationFrameId);
         animationFrameId = requestAnimationFrame(updateUI);
@@ -1105,14 +1314,31 @@
         pauseBtn.classList.add('hidden');
         resetBtn.classList.add('hidden');
 
-        // Instant reset of all digit slots
-        prevDigits = { h0: '0', h1: '0', m0: '4', m1: '5', s0: '0', s1: '0' };
-        rollDigit(slotH0, '0', true);
-        rollDigit(slotH1, '0', true);
-        rollDigit(slotM0, '4', true);
-        rollDigit(slotM1, '5', true);
-        rollDigit(slotS0, '0', true);
-        rollDigit(slotS1, '0', true);
+        // Restore manual duration controls on reset
+        if (timeAdjustBar) {
+          timeAdjustBar.classList.remove('hidden-bar');
+        }
+
+        // Restore keyboard instructions on reset
+        if (keyboardHint) {
+          keyboardHint.classList.remove('hidden-hint');
+        }
+
+        // Instant reset of all digit slots back to configured duration
+        const hStr = String(configuredHours).padStart(2, '0');
+        const mStr = String(configuredMinutes).padStart(2, '0');
+        const sStr = String(configuredSeconds).padStart(2, '0');
+        prevDigits = {
+          h0: hStr[0], h1: hStr[1],
+          m0: mStr[0], m1: mStr[1],
+          s0: sStr[0], s1: sStr[1]
+        };
+        rollDigit(slotH0, hStr[0], true);
+        rollDigit(slotH1, hStr[1], true);
+        rollDigit(slotM0, mStr[0], true);
+        rollDigit(slotM1, mStr[1], true);
+        rollDigit(slotS0, sStr[0], true);
+        rollDigit(slotS1, sStr[1], true);
 
         progressBar.style.transform = 'scaleX(1)';
       }
@@ -1182,6 +1408,42 @@
       /* -------------------------------------------------------------
          EVENT LISTENERS & KEYBOARD SHORTCUTS
       -------------------------------------------------------------- */
+      // Manual time adjustment input listeners (available only in starting/IDLE state)
+      if (inputHours) {
+        inputHours.addEventListener('input', function () {
+          updateConfiguredDuration(inputHours.value, inputMinutes.value, inputSeconds.value);
+        });
+        inputHours.addEventListener('blur', function () {
+          inputHours.value = configuredHours;
+        });
+      }
+      if (inputMinutes) {
+        inputMinutes.addEventListener('input', function () {
+          updateConfiguredDuration(inputHours.value, inputMinutes.value, inputSeconds.value);
+        });
+        inputMinutes.addEventListener('blur', function () {
+          inputMinutes.value = configuredMinutes;
+        });
+      }
+      if (inputSeconds) {
+        inputSeconds.addEventListener('input', function () {
+          updateConfiguredDuration(inputHours.value, inputMinutes.value, inputSeconds.value);
+        });
+        inputSeconds.addEventListener('blur', function () {
+          inputSeconds.value = configuredSeconds;
+        });
+      }
+
+      presetChips.forEach(chip => {
+        chip.addEventListener('click', function () {
+          if (timerStatus !== 'IDLE') return;
+          const h = chip.getAttribute('data-h');
+          const m = chip.getAttribute('data-m');
+          const s = chip.getAttribute('data-s');
+          updateConfiguredDuration(h, m, s);
+        });
+      });
+
       startBtn.addEventListener('click', startTimer);
 
       pauseBtn.addEventListener('click', function () {
